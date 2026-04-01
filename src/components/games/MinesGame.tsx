@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Volume2, VolumeX } from 'lucide-react';
 
 const GRID_SIZE = 25;
-const RTP_FACTOR = 0.94;
+const RTP_FACTOR = 0.99;
 const STORAGE_KEY = 'neon_mines_active_round_v1';
 
 const gemSound = typeof Audio !== 'undefined' ? new Audio('/gem.mp3') : null;
@@ -16,15 +16,16 @@ const bombSound = typeof Audio !== 'undefined' ? new Audio('/bomb.mp3') : null;
 function getProgressiveMultiplier(mines: number, revealedCount: number): number {
   if (revealedCount <= 0) return 1;
 
-  let multi = 1;
+  let raw = 1;
+
   for (let i = 0; i < revealedCount; i++) {
     const tilesRemaining = GRID_SIZE - i;
     const safeRemaining = GRID_SIZE - mines - i;
     if (safeRemaining <= 0) break;
-    multi *= RTP_FACTOR * (tilesRemaining / safeRemaining);
+    raw *= tilesRemaining / safeRemaining;
   }
 
-  return multi;
+  return raw * RTP_FACTOR;
 }
 
 function playFallbackSound(type: 'start' | 'safe' | 'bomb' | 'cashout') {
