@@ -48,9 +48,23 @@ export default function AdminPage({ onPageChange }: AdminPageProps) {
   const [sentEmails, setSentEmails] = useState<any[]>([]);
 
   useEffect(() => {
-    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
-    setUsers(storedUsers);
     setSentEmails(getSentEmails());
+
+    const loadUsers = async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      setUsers((data || []) as any);
+    };
+
+    loadUsers();
 
     const loadWithdrawalData = async () => {
       try {
@@ -159,43 +173,96 @@ const handleApproveDeposit = async (id: string) => {
   };
 
   const handleRejectWithdrawal = async (withdrawalId: string) => {
-    if (adminUser) {
-      // Get withdrawal details to refund user
-      const withdrawal = withdrawals.find(w => w.id === withdrawalId);
-      if (withdrawal) {
-        // Refund user's balance
-        const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
-        const userIndex = storedUsers.findIndex((u: User) => u.id === withdrawal.user_id);
-        if (userIndex !== -1) {
-          storedUsers[userIndex].balance += withdrawal.amount;
-          localStorage.setItem('users', JSON.stringify(storedUsers));
-          setUsers(storedUsers);
+    if (!adminUser) return;
+
+    const withdrawal = withdrawals.find(w => w.id === withdrawalId);
+
+    if (withdrawal) {
+      const { data: currentUser, error: fetchError } = await supabase
+        .from('profiles')
+        .select('balance')
+        .eq('id', withdrawal.user_id)
+        .single();
+
+      if (!fetchError && currentUser) {
+        const refundedBalance = Number(currentUser.balance) + Number(withdrawal.amount);
+
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ balance: refundedBalance })
+          .eq('id', withdrawal.user_id);
+
+        if (updateError) {
+          console.error(updateError);
         }
+      } else {
+        console.error(fetchError);
       }
-      
-      await rejectWithdrawalRequest(withdrawalId, adminUser.id);
-      toast.error('Withdrawal rejected! Balance refunded to user.');
     }
+
+    await rejectWithdrawalRequest(withdrawalId, adminUser.id);
+
+    const pendingWithdrawals = await getPendingWithdrawalRequests();
+    setWithdrawals(pendingWithdrawals);
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (!error) {
+      setUsers((data || []) as any);
+    }
+
+    toast.error('Withdrawal rejected! Balance refunded to user.');
   };
 
-  const handleAdjustBalance = (userId: string) => {
+  const handleAdjustBalance = async (userId: string) => {
     const amount = parseFloat(balanceAdjustment);
     if (isNaN(amount)) {
       toast.error('Please enter a valid amount');
       return;
     }
 
-    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
-    const userIndex = storedUsers.findIndex((u: User) => u.id === userId);
-    
-    if (userIndex !== -1) {
-      storedUsers[userIndex].balance = Math.max(0, storedUsers[userIndex].balance + amount);
-      localStorage.setItem('users', JSON.stringify(storedUsers));
-      setUsers(storedUsers);
-      setBalanceAdjustment('');
-      setSelectedUser(null);
-      toast.success(`Balance adjusted by $${amount}`);
+    const { data: currentUser, error: fetchError } = await supabase
+      .from('profiles')
+      .select('balance')
+      .eq('id', userId)
+      .single();
+
+    if (fetchError || !currentUser) {
+      console.error(fetchError);
+      toast.error('User not found');
+      return;
     }
+
+    const newBalance = Math.max(0, Number(currentUser.balance) + amount);
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ balance: newBalance })
+      .eq('id', userId);
+
+    if (updateError) {
+      console.error(updateError);
+      toast.error('Failed to adjust balance');
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error(error);
+    } else {
+      setUsers((data || []) as any);
+    }
+
+    setBalanceAdjustment('');
+    setSelectedUser(null);
+    toast.success(`Balance adjusted by $${amount}`);
   };
 
   const handleCreatePromoCode = async () => {
