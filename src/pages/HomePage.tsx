@@ -240,7 +240,7 @@ export default function HomePage({ onPageChange }: HomePageProps) {
               </div>
             </div>
             <a 
-              href="https://https://https://discord.gg/b3p3NKDV" 
+              href="https://https://discord.gg/b3p3NKDV" 
               target="_blank" 
               rel="noopener noreferrer"
               className="w-full sm:w-auto px-6 py-3 bg-[#5865F2] text-white font-semibold rounded-xl hover:bg-[#4752C4] transition-colors text-center"
