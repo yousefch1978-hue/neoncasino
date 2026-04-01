@@ -83,7 +83,7 @@ export const sendWelcomeEmail = async (email: string, username: string): Promise
       </div>
       
       <div style="text-align: center; margin: 30px 0;">
-        <a href="https://https://discord.gg/wJDPVMy6QgWYTAjx" 
+        <a href="https://https://https://discord.gg/b3p3NKDV" 
            style="background: #5865F2; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 8px; display: inline-block;">
           Join Our Discord
         </a>
