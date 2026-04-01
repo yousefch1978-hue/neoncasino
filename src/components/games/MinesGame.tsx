@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Volume2, VolumeX } from 'lucide-react';
 
 const GRID_SIZE = 25;
-const RTP_FACTOR = 0.99;
+const RTP_FACTOR = 0.94;
 const STORAGE_KEY = 'neon_mines_active_round_v1';
 
 const gemSound = typeof Audio !== 'undefined' ? new Audio('/gem.mp3') : null;

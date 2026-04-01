@@ -92,7 +92,7 @@ export default function CrashGame() {
       const elapsed = (performance.now() - startedAt) / 1000;
 
       // Much slower climb
-      let next = 1 + elapsed * 0.095 + Math.pow(elapsed, 1.32) * 0.024;
+      let next = 1 + elapsed * 0.082 + Math.pow(elapsed, 1.28) * 0.019;
       next = Number(next.toFixed(2));
 
       if (next >= crashPoint) {

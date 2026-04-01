@@ -373,7 +373,7 @@ export default function BlackjackGame() {
       const wager = finalBets[index] ?? numericBet;
 
       if (state === 'win') {
-        const payout = blackjackPayout && index === 0 ? wager * 2.1 : wager * 2;
+        const payout = blackjackPayout && index === 0 ? wager * 2.0 : wager * 2;
         totalPayout += payout;
         wins++;
       } else if (state === 'push') {
@@ -407,7 +407,7 @@ export default function BlackjackGame() {
       const wager = Number((finalBets[index] ?? numericBet).toFixed(2));
       const payout =
         state === 'win'
-          ? Number(((blackjackPayout && index === 0 ? wager * 2.1 : wager * 2)).toFixed(2))
+          ? Number(((blackjackPayout && index === 0 ? wager * 2.0 : wager * 2)).toFixed(2))
           : state === 'push'
             ? wager
             : 0;

@@ -13,31 +13,31 @@ const DIFFICULTIES = {
     name: 'Easy',
     rows: 8,
     tilesPerRow: 4,
-    multipliers: [1.24, 1.62, 2.12, 2.78, 3.64, 4.76, 6.22, 8.12],
+    multipliers: [1.16, 1.42, 1.74, 2.14, 2.63, 3.23, 3.96, 4.86],
   },
   medium: {
     name: 'Medium',
     rows: 8,
     tilesPerRow: 3,
-    multipliers: [1.39, 2.02, 2.94, 4.28, 6.23, 9.07, 13.21, 19.24],
+    multipliers: [1.28, 1.72, 2.31, 3.10, 4.16, 5.58, 7.48, 10.03],
   },
   hard: {
     name: 'Hard',
     rows: 9,
     tilesPerRow: 2,
-    multipliers: [1.86, 3.42, 6.29, 11.58, 21.30, 39.19, 72.11, 132.68, 244.14],
+    multipliers: [1.66, 2.76, 4.58, 7.60, 12.62, 20.95, 34.77, 57.70, 95.74],
   },
   expert: {
     name: 'Expert',
     rows: 9,
     tilesPerRow: 3,
-    multipliers: [2.94, 8.64, 25.40, 74.68, 219.50, 645.00, 1895.00, 5568.00, 16365.00],
+    multipliers: [2.50, 6.25, 15.63, 39.06, 97.66, 244.14, 610.35, 1525.88, 3814.70],
   },
   master: {
     name: 'Master',
     rows: 9,
     tilesPerRow: 4,
-    multipliers: [3.92, 15.37, 60.24, 236.00, 925.00, 3625.00, 14215.00, 55750.00, 218750.00],
+    multipliers: [3.20, 10.24, 32.77, 104.86, 335.54, 1073.73, 3435.94, 10995.01, 35184.03],
   },
 } as const;
 
